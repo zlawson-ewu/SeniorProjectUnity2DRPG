@@ -1,0 +1,1 @@
+To remove tile-tearing during play, you must go to Edit -> Project Settings -> Quality -> Turn off Anti-Aliasing and Ansiotropic Filtering

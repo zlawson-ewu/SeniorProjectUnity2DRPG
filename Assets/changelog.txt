@@ -1,0 +1,176 @@
+Demo_v4 (Jake)
+1. Added PauseMenu functionality to demo.
+2. Redesigned MainMenu scene and added it to demo.
+
+Demo_v5 (Jake)
+1. Fixed UI bugs for BattleManager and PauseManager.
+2. Refactored DialogueManager prefab.
+3. Added enemy near begining for forest for testing purposes.
+
+Demo_v6 (Zach)
+1. Fixed short black combat background by changing its resolution to 1950 x 1080
+2. Changed enemy prefab to have character script attached
+3. Altered GameManager StartCombat() to call BattleManager's version
+4. Simplified TeleportSpot's logic
+4. Changed EnemyController script to pass itself into GameManager's StartCombat() and removed an unneeded method
+5. Altered logic in GameManager ReturnToMainMenu method to not change origin text so as to preserve difference (unsure if difference needed though)
+
+Issues:
+Combat pulls player's sprite instead of enemy's and freezes on start. -Fixed, wasn't actually the case. Actually doesn't pull in color
+Combat menu layout seems off, menu box too tall. -Possibly related to view aspect
+
+Demo_v7 (Zach)
+1. Froze Z rotation on enemy prefab
+2. Added StartCoroutine call to BattleManager to fix combat
+3. Added GameManager EndCombat() calls to BattleManager to set bool in GameManager
+4. Created Music Module with relevant folders and readme for handling game music.
+5. Created MusicManager and AreaMusicTrigger objects and scripts
+6. Added music and area triggers for each overworld zone
+7. Added music for battles and game overs in GameManager
+8. Added a method in GameManager, and a signaling call in BattleManager to, PlayerHasDied() to play game over music one-shot and for other possible utility (animation?)
+
+TODO: Still need to add a trigger for boss music in GameManager, not sure how we want to go about differentiating boss combat from normal combat (and which song to use)
+
+Demo_v8 (Zach)
+1. Fixed tearing issued by changing sprite atlas pixels-per-unit value from 16 to 15.99
+2. Added Quest support with QuestManager, QuestTarget, and QuestGiver, inside their own module file.
+3. Made prefabs out of existing enemies and added a King and goblin prefab.
+4. King has QuestGiver and boss goblin has a QuestTarget, they're linked to each other.
+5. Right now QuestManager just handles wrangling all QuestGivers and their quest states
+6. Added call to check for QuestTarget and set flag on battle victory in BattleManager
+7. King's Quest will swap for completion dialogue when battle with Boss Goblin won.
+8. Tried fixing the main menu and other saving logic. Loading doesn't work for reference reasons, but the buttons call methods in GameManager now.
+9. Added a spawn manager in hopes of fixing the scene transition problem and loading.
+10. Added music for the main menu.
+
+TODO: Saving currently works, but loading is running into reference problems. 
+	I created a spawn manager on the thought that it should be responsible for instantiating the player, NPCs, and enemies on a scene load.
+	Instantiation not working as I'd hoped. Probably something I'm not understanding about the architecture or object instantiation.
+	My general idea is that since the main menu calls the StartNewGame or LoadExistingGame methods, objects could be instantiated there before SaveManager's LoadGame is called.
+	It would probably be easiest to just persist the player through scenes and set inactive while on the main menu
+	The main menu could also be made an overlay like combat.
+
+Demo_v9 (Jake)
+1. Added functionality to Item button during combat. Just needs to be rigged to Player Inventory.
+2. Fixed Player_Movement Loading problem talked about in Demo_v8.
+3. Added restore() function to Character class that restores mana. This is so Mathew can easily implement Mana Potions. 
+4. Added animations to Player, King, Halberdman1 and Halberdman2, Goblin, and Boss Goblin.
+
+Demo_v10 (Zach)
+1. Fixed main menu and saving in general, all paths through the main menu should work now. Saving and loading works from seemingly all paths as well.
+	Problem was rooted in scene not being fully loaded when LoadData was called.
+	Fixed this by calling SaveManager's LoadData from an enumerator in GameManager that yield-returns until the scene is loaded.
+	Subtle but farreaching fix. Adding other levels and scenes should work now so the game is much more expandable.
+2. Added saving of enemy state through bool isDead. Changed SetActive(false) call on combat start in EnemyController to turn off the rigidbody2D's simulation instead
+	Turning off the rb simulation seems more reliable, save manager wouldn't find object when it was set inactive.
+	Dead enemies will now be disabled on game loads.
+	Character.cs save logic now rounds up enemy states per enemy and saves them in a dictionary in GameData.
+3. Added CheckIfGameDataExists method that returns bool in SaveManager.
+4. Adjusted MainMenuManager to grey out and disable button and change button text when no save file found.
+5. Created SoundManager to handle sound effects (SFX).
+	Created prefab and script with method PlaySFX(string)
+	Imported suite of free sfx from itch.io, link in the module's readme
+	Added ConfirmSFX and DeniedSFX calls in MainMenuManager
+	Added ConfirmSFX, DeclineSFX, PauseSFX, and UnPauseSFX calls in PauseMenu
+	Added EncounterSFX call in EnemyController
+	Added ConfirmSFX, DeniedSFX, DeclineSFX, UseItemSFX, HealSFX, SpeedUpSFX, FireFlareSFX, FleeSFX, SlashSFX, MissEvadeSFX, DeathSFX, and ImpactFleshSFX calls in BattleManager
+	Added HoverButtonSFX call in DialogueManager
+
+Demo_v11(Mathew)
+1. Added 3 basic Consumables
+2. Added 10 Equipment items.
+3. Added UI for inventory.
+4. Gave access to all items to character.
+
+Demo_v12 (Zach)
+1. Fixed typo bug on health potion use in battlemanager, was restoring MP instead of HP
+2. Updated BattleManager's setItemButtonsAs to show the current amount of items
+3. Moved currentHP and MP set from CalculateDerivedStats to Awake in Character to give method runtime flexibility (i.e. not resetting HP and MP)
+	Also added recalculateStats() to Character for same reason
+4. Added recalculateStats() call to Equipment to alter stats on equip/unequip
+5. Implemented equipment and consumable saving via dictionaries in GameData, all item amounts and unlocked/equipped equipment is tracked
+6. Added logic to InventoryMenu to change button text when items equipped, utilized extant equipped logic in Equipment.cs. Made 'equipped' bool public there.
+7. Added SFX to equip buttons in inventory menu.
+8. Adjusted 'consumables' list in Inventory menu to be sourced from Character.cs (where it is organized) to fix display error in inventory menu.
+
+Demo_v13 (Jake)
+NOTE: Import this package into a fresh project
+NOTE: Before doing anything, change the game view to 1920x1080 resolution of my UI changes will get lost
+1. Character creation menu implemented
+2. Level up menu implemented
+3. Character can level up upon defeating enemies
+4. Character can level up on completing quests
+5. More NPC's added
+6. More enemies added
+7. UI Fixes
+
+Demo_v14 (Zach)
+1. Readded modifers and prefabbed Equipment and Consumables.
+2. Fixed equipment reequipping after level up with check for equipped true.
+3. Added random level-based gold amount reward on enemy defeat.
+4. Changed WaypointFollower to make rigidbody velocity zero if player is interacting in FixedUpdate(). Enemies now freeze when player is interacting.
+5. Enemy positions are now saved and loaded to avoid autocombat on game load if the player saved at an instantiation spot.
+6. Adjusted latter half of goblin prefabs to be level 2 with more xp and better stats. Also adjusted Boss Goblin.
+	Quest is now completable through normal means, though difficulty is undertuned.
+7. Changed quests and dialogue to reward player on next conversation.
+	Added playerHasRead bool to Dialogue
+	Added logic in DialogueTrigger's Interact() to mark the dialogue as read, and also to check if the speaker is a questgiver
+	Added method QuestGiverRewardPlayer() in QuestGiver to allow reward to be given as part of dialogue interaction, and only once.
+	Added IEnumerator WaitUntilPlayerDoneTalking() to QuestGiver to delay reward and level-up check until after dialogue finished.
+	Added bool playerRewarded check to QuestGiverRewardPlayer and DialogueAfterComplete for continuity.
+
+TODO: the Battle Screen shows a line at the bottom of 1 pixel height
+
+Demo_v15 (Mathew)
+1. Fixed consumable item arrangement bug in prefab
+
+Demo_v16 (Zach)
+1. Fixed full heal on equip bug leftover from levelup integeration, added recalculateStatsWithHeal() to Character.cs and moved healing logic from recalculateStats to it
+	Changed calls in LevelUpMenu and CharacterCreationMenu to WithHeal() version
+	Added fullHeal() method to Character.cs and called it in LevelUpMenu after equipment reequipped
+2. Added overworld item pickups to let the player collect equipment
+	OverworldItem object is just an NPC with a OverworldItem.cs attached
+	Overworld item should have a piece of equipment assigned to it
+	The script changes the dialogue to reflect the rewarded item
+	Interacting with the overworld item will increment that equipment's amount and then disable the sprite and collider
+	Additional logic added to Character.cs Save and Load methods to track whether or not the overworld item has been picked up
+3. Changed Equipment.cs equip() to only equip if input is player character, was causing weird stat changes on enemies on loading saves
+4. Moved Equipment and Consumables save logic to GameManager where it makes more sense to be.
+5. Fixed incrementing stats on save/load due to saving the equipment-modified stats carelessly. 
+	Now saving in Character for player unequips everything before saving then requips.
+
+TODO: Bug with saving after equipping two items that boost the same stat. Saving changes stats but loading restores them to as they should be.
+	Tried many things with saving order and other stuff, problem seems linked to the both equipment boosting the same stat
+
+Demo_v17 (Zach)
+1. Fixed saving bug by adding getRawValue() to Stat.cs to sidestep issues with equipping/unequipping saving
+	Modifiers don't need to be saved anyways, equipment is reequipped on game load where modifiers are applied
+	Added calls in Character.cs to get rid of stat changes on save that did not persist on load
+	Added calls in LevelUpMenu.cs to get rid of similar issue after leveling up
+2. Changed Consumables array in Character to a List<Consumable>
+	Also changed same array in InventoryMenu
+	Adjusted calls in Character, InventoryMenu, and BattleManager to use list search instead of hardcoded array values
+	Order of items in list should no longer make any difference in use
+	Consumables should now be much more extensible
+3. Modified OverworldItem.cs to work for all Items
+	Created overworld items for all consumables and placed them around the map
+4. Added a Healing Altar to the Church so the player can restore their Health and Mana for free
+	Added if statement in DialogueTrigger to check for and call it
+5. Fixed bug with Health and Mana not clamping to max values on removal, added method adjustHealthAndManaIfOverMax() to Character.cs
+6. Fixed bug with saving, added check after GameManger loads equipment to adjust current Health and Mana to saved values
+7. Added many decorations to the Overworld interiors
+8. Added many enemies and adjusted their levels and stats
+9. Fixed bug caused by playerRewarded bool not being saved and accounted for in QuestManager's save/load logic
+
+Demo_v18 (Jake)
+1. Fixed Inventory bug by attaching consumables to PlayerPrefab.
+2. Fixed background scale in BattleManager prefab to stretch across the whole screen.
+
+Demo_v19 (Jake)
+1. Fixed bug where gold couldn't be awarded to the player.
+
+Demo_v20 (Jake)
+1. Fixed bug where player could open pause and inventory menus during character creation.
+
+Demo_v21 (Jake)
+1. Fixed bug where Carols NPC sprite was missing.
